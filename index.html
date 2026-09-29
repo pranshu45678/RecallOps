@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecallOps AI — Incident Intelligence with Memory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhancements.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">R</div>
+            <div>
+                <h2>RecallOps</h2>
+                <span>AI Incident Intelligence</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+            <p class="nav-title">WORKSPACE</p>
+
+            <button class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')"><span>⌂</span> Dashboard</button>
+            <button class="nav-item" data-page="incident" onclick="showPage('incident')"><span>⚠</span> New Incident</button>
+            <button class="nav-item" data-page="history" onclick="showPage('history')"><span>◷</span> Incident History</button>
+            <button class="nav-item" data-page="memory" onclick="showPage('memory')"><span>✦</span> Organizational Memory</button>
+            <button class="nav-item" data-page="learning" onclick="showPage('learning')"><span>↗</span> Learning Progress</button>
+
+            <p class="nav-title second-title">SYSTEM</p>
+            <button class="nav-item" data-page="settings" onclick="showPage('settings')"><span>⚙</span> Settings</button>
+        </nav>
+
+        <div class="memory-status">
+            <div class="status-header">
+                <div class="status-dot" id="backendDot"></div>
+                <span>Hindsight Memory</span>
+            </div>
+            <p id="backendStatusText">Checking…</p>
+            <div class="memory-bar"><div class="memory-progress" id="sidebarBar"></div></div>
+            <small id="sidebarCount">– incidents remembered</small>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="avatar">ET</div>
+            <div>
+                <strong>Engineering Team</strong>
+                <small>Production Workspace</small>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+     
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb" id="breadcrumb">Workspace / Overview</p>
+                <h1 id="pageTitle">Incident Intelligence</h1>
+            </div>
+            <div class="top-actions">
+                <div class="system-status" id="systemStatus">
+                    <span></span>
+                    <em id="systemStatusText">Connecting…</em>
+                </div>
+                <div class="notification">♢</div>
+                <div class="profile-avatar">A</div>
+            </div>
+        </header>
+
+        <!-- ================= DASHBOARD ================= -->
+        <section id="dashboard" class="page active-page">
+
+            <div class="welcome">
+                <div>
+                    <p class="eyebrow">ORGANIZATIONAL MEMORY</p>
+                    <h2>Your incidents are remembered.</h2>
+                    <p>RecallOps learns from every incident your team resolves and uses that experience to accelerate future investigations.</p>
+                </div>
+                <button class="primary-button" onclick="showPage('incident')">+ New Incident</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple">✦</div>
+                    <div><span>Total Incidents</span><strong id="statTotal">–</strong><small id="statTotalSub">&nbsp;</small></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">◉</div>
+                    <div><span>Root Causes</span><strong id="statCauses">–</strong><small id="statCausesSub">&nbsp;</small></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <div><span>Resolved</span><strong id="statResolved">–</strong><small id="statResolvedSub">&nbsp;</small></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">◷</div>
+                    <div><span>Avg. Resolution</span><strong id="statAvg">–</strong><small id="statAvgSub">&nbsp;</small></div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <div class="panel large-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Recent Incidents</h3>
+                            <p>Latest production incidents and resolutions</p>
+                        </div>
+                        <button class="text-button" onclick="showPage('history')">View all →</button>
+                    </div>
+
+                    <div class="incident-table">
+                        <div class="table-row table-head">
+                            <span>Incident</span><span>Service</span><span>Severity</span><span>Status</span>
+                        </div>
+                        <div id="recentRows"></div>
+                    </div>
+                </div>
+
+                <div class="panel memory-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Memory Intelligence</h3>
+                            <p>What RecallOps has learned</p>
+                        </div>
+                        <span class="memory-sparkle">✦</span>
+                    </div>
+
+                    <div class="memory-stat"><span>Similar incidents found</span><strong id="memSimilar">–</strong></div>
+                    <div class="memory-stat"><span>Successful resolutions</span><strong id="memSuccess">–</strong></div>
+                    <div class="memory-stat"><span>Recurring patterns</span><strong id="memPatterns">–</strong></div>
+
+                    <div class="memory-insight">
+                        <div class="insight-icon">✦</div>
+                        <div>
+                            <strong>Top recurring pattern</strong>
+                            <p id="topPattern">–</p>
+                            <small id="topPatternSub">&nbsp;</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-section">
+                <div class="learning-content">
+                    <div class="learning-icon">✦</div>
+                    <div>
+                        <p class="eyebrow">THE MEMORY LOOP</p>
+                        <h3>Every incident makes RecallOps smarter.</h3>
+                        <p>Incident → Recall → Resolve → Learn</p>
+                    </div>
+                </div>
+                <div class="learning-flow">
+                    <div><span>01</span> Incident</div><div class="flow-line"></div>
+                    <div><span>02</span> Recall</div><div class="flow-line"></div>
+                    <div><span>03</span> Resolve</div><div class="flow-line"></div>
+                    <div><span>04</span> Learn</div>
+                </div>
+                <button class="learning-more-button" onclick="showPage('learning')">
+                    View Learning Intelligence →
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= NEW INCIDENT ================= -->
+        <section id="incident" class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">INCIDENT RESPONSE</p>
+                    <h2>Analyze a New Incident</h2>
+                    <p>Tell RecallOps what is happening. It will search organizational memory for similar incidents.</p>
+                </div>
+            </div>
+
+            <div class="incident-layout">
+
+                <div class="panel incident-form">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Incident Details</h3>
+                            <p>Provide the information available to you.</p>
+                        </div>
+                    </div>
+
+                    <label for="serviceInput">Service</label>
+                    <input id="serviceInput" type="text" list="serviceList" autocomplete="off" placeholder="e.g. Payment API">
+                    <datalist id="serviceList"></datalist>
+                    <p class="field-error hidden" id="err-service">Enter the affected service.</p>
+
+                    <label for="errorInput">Error / Problem</label>
+                    <input id="errorInput" type="text" placeholder="e.g. HTTP 503 errors">
+                    <p class="field-error hidden" id="err-error">Describe the error or problem.</p>
+
+                    <label for="severityInput">Severity</label>
+                    <select id="severityInput">
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+
+                    <label for="symptomsInput">Symptoms</label>
+                    <textarea id="symptomsInput" rows="6" placeholder="Describe what users or engineers are observing..."></textarea>
+                    <p class="field-error hidden" id="err-symptoms">Add a few symptoms so memory can match them.</p>
+
+                    <button class="analyze-button" id="analyzeBtn" onclick="analyzeIncident()">
+                        <span>✦</span> Analyze with RecallOps
+                    </button>
+                    <button class="sample-button" type="button" onclick="loadSample()">Load a sample incident</button>
+                    <p class="form-hint">Tip: press Ctrl + Enter to analyze</p>
+                </div>
+
+                <div id="analysisEmpty" class="panel analysis-empty">
+                    <div class="empty-icon">✦</div>
+                    <h3>Waiting for an incident</h3>
+                    <p>Submit an incident to search Hindsight for relevant historical experiences.</p>
+                </div>
+
+                <div id="analysisLoading" class="panel analysis-loading hidden">
+                    <div class="spinner"></div>
+                    <h3>Searching organizational memory…</h3>
+                    <ul class="loading-steps" id="loadingSteps">
+                        <li>Reading incident context</li>
+                        <li>Recalling similar incidents from Hindsight</li>
+                        <li>Ranking matches by similarity</li>
+                        <li>Building recommendation</li>
+                    </ul>
+                </div>
+
+                <div id="analysisResult" class="analysis-result hidden"></div>
+            </div>
+        </section>
+
+        <!-- ================= HISTORY ================= -->
+        <section id="history" class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">ORGANIZATIONAL MEMORY</p>
+                    <h2>Incident History</h2>
+                    <p>Previous incidents remembered by RecallOps.</p>
+                </div>
+            </div>
+
+            <div class="panel history-panel">
+                <div class="history-search">
+                    <input id="historySearch" type="text" placeholder="Search by ID, service, error or root cause…">
+                    <select id="historyFilter">
+                        <option value="all">All</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="investigating">Investigating</option>
+                    </select>
+                </div>
+                <div class="history-list" id="historyList"></div>
+            </div>
+        </section>
+
+        <!-- ================= MEMORY ================= -->
+        <section id="memory" class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">HINDSIGHT</p>
+                    <h2>Organizational Memory</h2>
+                    <p>Knowledge RecallOps has accumulated from previous incidents.</p>
+                </div>
+            </div>
+
+            <div class="memory-dashboard">
+                <div class="panel big-memory-card">
+                    <div class="memory-number" id="memBig">–</div>
+                    <span>Incidents Remembered</span>
+                    <div class="memory-progress-large"><div id="memBigBar"></div></div>
+                    <small>Organizational memory is continuously growing.</small>
+                </div>
+
+                <div class="panel">
+                    <h3>Recurring Root Causes</h3>
+                    <div id="causeList"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= LEARNING INTELLIGENCE ================= -->
+        <section id="learning" class="page">
+            <div class="page-heading learning-page-heading">
+                <div>
+                    <p class="eyebrow">ORGANIZATIONAL LEARNING</p>
+                    <h2>Learning Intelligence</h2>
+                    <p>Measure how incident experience becomes reusable operational knowledge.</p>
+                </div>
+                <div class="learning-live-badge">
+                    <span></span> LIVE LEARNING
+                </div>
+            </div>
+
+            <div class="learning-grid-main">
+                <div class="panel learning-progress-card">
+                    <div class="learning-card-header">
+                        <div>
+                            <p class="eyebrow">MEMORY MATURITY</p>
+                            <h3>Learning Progress</h3>
+                        </div>
+                        <strong id="learningScore">0%</strong>
+                    </div>
+
+                    <div class="learning-progress-track">
+                        <div id="learningProgressFill"></div>
+                    </div>
+
+                    <div class="learning-progress-meta">
+                        <span id="learningProgressText">Building organizational memory…</span>
+                        <span id="learningGoalLabel">Goal: 80%</span>
+                    </div>
+
+                    <div class="learning-kpi-grid">
+                        <div class="learning-kpi">
+                            <span>Knowledge Captured</span>
+                            <strong id="knowledgeCaptured">0</strong>
+                            <small>resolved incidents</small>
+                        </div>
+                        <div class="learning-kpi">
+                            <span>Resolutions Reused</span>
+                            <strong id="resolutionsReused">0</strong>
+                            <small>memory-assisted analyses</small>
+                        </div>
+                        <div class="learning-kpi">
+                            <span>Patterns Found</span>
+                            <strong id="patternsFound">0</strong>
+                            <small>recurring root causes</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel learning-streak-card">
+                    <div class="streak-icon">🔥</div>
+                    <p class="eyebrow">LEARNING STREAK</p>
+                    <strong id="learningStreak">0</strong>
+                    <h3>days</h3>
+                    <p id="streakMessage">Resolve or analyze an incident to start your streak.</p>
+
+                    <div class="streak-track">
+                        <span id="streakFill"></span>
+                    </div>
+                    <small>7 days is the next streak milestone</small>
+                </div>
+            </div>
+
+            <div class="panel knowledge-pulse-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">KNOWLEDGE PULSE</p>
+                        <h3>7-Day Learning Activity</h3>
+                        <p>Every analysis and captured resolution contributes to the pulse.</p>
+                    </div>
+                    <div class="pulse-summary">
+                        <strong id="pulseTotal">0</strong>
+                        <span>events</span>
+                    </div>
+                </div>
+
+                <div class="pulse-chart" id="pulseChart"></div>
+            </div>
+
+            <div class="learning-bottom-grid">
+                <div class="panel milestone-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">TEAM MILESTONES</p>
+                            <h3>Knowledge Achievements</h3>
+                        </div>
+                        <span class="milestone-count" id="milestoneCount">0/4</span>
+                    </div>
+
+                    <div class="milestones">
+                        <div class="milestone" data-key="memory" data-target="10">
+                            <div class="milestone-icon">🧠</div>
+                            <div class="milestone-body">
+                                <strong>Memory Builder</strong>
+                                <span>Capture 10 resolved incidents</span>
+                                <div class="milestone-track"><i></i></div>
+                            </div>
+                            <b>○</b>
+                        </div>
+
+                        <div class="milestone" data-key="resolutions" data-target="15">
+                            <div class="milestone-icon">🛠</div>
+                            <div class="milestone-body">
+                                <strong>Resolution Library</strong>
+                                <span>Capture 15 successful fixes</span>
+                                <div class="milestone-track"><i></i></div>
+                            </div>
+                            <b>○</b>
+                        </div>
+
+                        <div class="milestone" data-key="recalls" data-target="10">
+                            <div class="milestone-icon">🔎</div>
+                            <div class="milestone-body">
+                                <strong>Pattern Hunter</strong>
+                                <span>Use memory in 10 analyses</span>
+                                <div class="milestone-track"><i></i></div>
+                            </div>
+                            <b>○</b>
+                        </div>
+
+                        <div class="milestone" data-key="events" data-target="25">
+                            <div class="milestone-icon">🏆</div>
+                            <div class="milestone-body">
+                                <strong>Institutional Memory</strong>
+                                <span>Reach 25 learning events</span>
+                                <div class="milestone-track"><i></i></div>
+                            </div>
+                            <b>○</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel next-goal-card">
+                    <p class="eyebrow">NEXT GOAL</p>
+                    <div class="next-goal-icon">🎯</div>
+                    <h3 id="nextGoalTitle">Capture your first resolution</h3>
+                    <p id="nextGoalText">Store a successful fix in Hindsight so future incidents can reuse it.</p>
+                    <div class="next-goal-progress">
+                        <div><span id="goalProgress"></span></div>
+                        <strong id="goalPercent">0%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel learning-loop-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">THE LEARNING LOOP</p>
+                        <h3>From incident to institutional memory</h3>
+                        <p>RecallOps turns every resolved production problem into experience that can help the next investigation.</p>
+                    </div>
+                </div>
+
+                <div class="learning-loop-steps">
+                    <div class="learning-loop-step">
+                        <span>01</span>
+                        <strong>Incident</strong>
+                        <small>Capture service, error and symptoms.</small>
+                    </div>
+                    <div class="loop-connector">→</div>
+                    <div class="learning-loop-step">
+                        <span>02</span>
+                        <strong>Recall</strong>
+                        <small>Find similar historical experiences.</small>
+                    </div>
+                    <div class="loop-connector">→</div>
+                    <div class="learning-loop-step">
+                        <span>03</span>
+                        <strong>Analyze</strong>
+                        <small>Identify patterns and likely cause.</small>
+                    </div>
+                    <div class="loop-connector">→</div>
+                    <div class="learning-loop-step">
+                        <span>04</span>
+                        <strong>Resolve</strong>
+                        <small>Apply and record the successful fix.</small>
+                    </div>
+                    <div class="loop-connector">→</div>
+                    <div class="learning-loop-step">
+                        <span>05</span>
+                        <strong>Learn</strong>
+                        <small>Store the outcome for future recall.</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SETTINGS ================= -->
+        <section id="settings" class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">SYSTEM</p>
+                    <h2>Settings</h2>
+                    <p>Connect the dashboard to your RecallOps backend.</p>
+                </div>
+            </div>
+
+            <div class="panel settings-panel">
+                <label for="apiUrlInput">Backend URL</label>
+                <input id="apiUrlInput" type="text" placeholder="http://localhost:8000">
+                <p class="form-hint">Leave empty to run in demo mode with built-in sample data.</p>
+                <div class="settings-actions">
+                    <button class="analyze-button" onclick="saveSettings()">Save &amp; test connection</button>
+                    <button class="sample-button" onclick="resetDemoData()">Reset demo data</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Resolve modal -->
+<div class="modal-backdrop hidden" id="resolveModal" onclick="if(event.target===this)closeResolveModal()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="resolveTitle">
+        <p class="eyebrow">CLOSE THE LOOP</p>
+        <h3 id="resolveTitle">How was it resolved?</h3>
+        <p class="modal-sub">This is stored in Hindsight so the next similar incident is solved faster.</p>
+        <label for="rootCauseInput">Root cause</label>
+        <input id="rootCauseInput" type="text" placeholder="e.g. Database connection pool exhaustion">
+        <label for="resolutionInput">What fixed it?</label>
+        <textarea id="resolutionInput" rows="4" placeholder="e.g. Increased pool size from 20 to 50 and restarted the service"></textarea>
+        <div class="modal-actions">
+            <button class="sample-button" onclick="closeResolveModal()">Cancel</button>
+            <button class="analyze-button" onclick="submitResolution()">✓ Store in memory</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

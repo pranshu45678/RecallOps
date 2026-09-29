@@ -1,0 +1,24 @@
+RECALLOPS AI — START HERE
+
+1. Extract this ZIP.
+2. Open the extracted RecallOps_AI_FINAL folder in VS Code.
+3. Open a terminal in:
+   RecallOps_AI_FINAL\backend
+4. Run:
+   npm install
+5. Create backend\.env from backend\.env.example
+6. Put your Hindsight API key in backend\.env:
+   HINDSIGHT_API_KEY=YOUR_REAL_KEY
+7. Start:
+   npm start
+8. Open:
+   http://localhost:3000
+
+Do NOT upload or share backend\.env.
+Do NOT put your Hindsight API key in HTML/CSS/JS.
+
+Hackathon demo flow:
+New Incident → Analyze → Hindsight Recall → AI Recommendation
+→ Mark Resolved → Store Resolution → Analyze a similar incident again.
+Use the Learning Progress page to show the learning loop, streak,
+Knowledge Pulse, milestones, and next goal.
